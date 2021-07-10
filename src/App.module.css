@@ -1,0 +1,10 @@
+.appWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ececec;
+  height: 100%;
+}
+.addNoteArea {
+  margin-top: 24px;
+}
