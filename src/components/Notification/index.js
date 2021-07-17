@@ -4,6 +4,7 @@ const Notification = ({ message }) => {
   if (message === null) {
     return null;
   }
-
-  return <Alert message={message} banner className="error" />;
+  return <Alert message={message} className="error" />;
 };
+
+export default Notification;

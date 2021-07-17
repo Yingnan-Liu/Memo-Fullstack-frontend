@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button, Card } from "antd";
+import { Button, Card, Layout } from "antd";
 import Note from "./components/Note";
 import LoginForm from "./components/LoginForm";
 import NoteForm from "./components/NoteForm";
 import Togglable from "./components/Togglable";
-import Notification from "rc-notification/lib/Notification";
+import Notification from "./components/Notification";
 import noteService from "./services/notes";
 import loginService from "./services/login";
-import styles from "./App.module.css";
+import styles from "./App.module.scss";
 
 function App() {
   const [notes, setNotes] = useState([]);
@@ -26,6 +26,15 @@ function App() {
       console.log(initialNotes);
       setNotes(initialNotes);
     });
+  }, []);
+  // 检查是否登陆过
+  useEffect(() => {
+    const loggedUserJson = window.localStorage.getItem("loggedUser");
+    if (loggedUserJson) {
+      const user = JSON.parse(loggedUserJson);
+      setUser(user);
+      noteService.setToken(user.token);
+    }
   }, []);
 
   //点击按钮改变重要性 id-->note-->http put替换掉该note
@@ -60,18 +69,23 @@ function App() {
   const notesToShow = showAll ? notes : notes.filter((note) => note.important);
   // console.log(notesToShow);
 
+  // 登录
   const handleLoginSubmit = async (values) => {
     const { username, password } = values;
     console.log(username, password);
     try {
+      //后端返回三个数据：.send({ token, username: user.username, name: user.name }
       const user = await loginService.login({
         username,
         password,
       });
+      // console.log("login return data:", user);
       noteService.setToken(user.token);
+      // 本地存储token
+      window.localStorage.setItem("loggedUser", JSON.stringify(user));
       setUser(user);
     } catch (exception) {
-      setErrorMessage("Wrong credentials");
+      setErrorMessage("Wrong credentials!");
       setTimeout(() => {
         setErrorMessage(null);
       }, 5000);
@@ -87,30 +101,40 @@ function App() {
   return (
     <div className={styles.appWrapper}>
       <Notification message={errorMessage} />
-
+      <div className={styles.header}>
+        <h2 className={styles.title}>
+          Welcome! {user ? user.name : "New user"}
+        </h2>
+      </div>
       {/* {user === null && <LoginForm handleSubmit={handleLoginSubmit} />} */}
-      <Togglable buttonLabel="Login">
-        <LoginForm handleSubmit={handleLoginSubmit} />
-      </Togglable>
-      <Card
-        className={styles.card}
-        title="Notes"
-        style={{ width: "60vw" }}
-        extra={
-          <Button onClick={() => setShowAll(!showAll)}>
-            <span>show {showAll ? "important" : "all"}</span>
-          </Button>
-        }
-      >
-        {notesToShow.map((note, i) => (
-          <Note
-            toggleImportance={() => toggleImportanceOf(note.id)}
-            key={note.id}
-            note={note}
-          />
-        ))}
-        {user !== null && noteForm()}
-      </Card>
+      <div className={styles.body}>
+        {!user && (
+          <aside className={styles.sider}>
+            <LoginForm handleSubmit={handleLoginSubmit} />
+          </aside>
+        )}
+
+        <main className={styles.content}>
+          <Card
+            className={styles.card}
+            title="Notes"
+            extra={
+              <Button onClick={() => setShowAll(!showAll)}>
+                <span>show {showAll ? "important" : "all"}</span>
+              </Button>
+            }
+          >
+            {notesToShow.map((note, i) => (
+              <Note
+                toggleImportance={() => toggleImportanceOf(note.id)}
+                key={note.id}
+                note={note}
+              />
+            ))}
+            {user !== null && noteForm()}
+          </Card>
+        </main>
+      </div>
     </div>
   );
 }

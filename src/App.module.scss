@@ -1,0 +1,36 @@
+.appWrapper {
+  display: flex;
+  flex-direction: column;
+  background: #ececec;
+  min-height: 100vh;
+  .header {
+    flex: 1;
+    display: flex;
+    line-height: 5em;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    .title {
+      text-decoration: dashed;
+    }
+  }
+  .body {
+    display: flex;
+    flex: auto;
+    margin-top: 4rem;
+    .sider {
+      flex: 0 0 24em;
+      margin-right: 4em;
+      margin-top: 13em;
+    }
+    .content {
+      flex: auto;
+      display: flex;
+      justify-content: center;
+      .card {
+        width: 50vw;
+        border-radius: 1.5em;
+      }
+    }
+  }
+}
