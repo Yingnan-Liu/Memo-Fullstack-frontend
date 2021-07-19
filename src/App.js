@@ -57,7 +57,21 @@ function App() {
         setNotes(notes.filter((n) => n.id !== id));
       });
   };
-
+  const deleteNote = (id) => {
+    //const noteIndex = notes.find((n) => n.id === id);
+    noteService
+      .deleteNote(id)
+      .then((response) => {
+        console.log("app.js:", response);
+        setNotes(notes.filter((n) => n.id !== id));
+      })
+      .catch((error) => {
+        setErrorMessage(`Note was already deleted from server`);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
+      });
+  };
   const createNote = (noteObject) => {
     // 发送一个js对象
     noteService.create(noteObject).then((returnedNote) => {
@@ -100,7 +114,7 @@ function App() {
 
   return (
     <div className={styles.appWrapper}>
-      <Notification message={errorMessage} />
+      {errorMessage && <Notification message={errorMessage} />}
       <div className={styles.header}>
         <h2 className={styles.title}>
           Welcome! {user ? user.name : "New user"}
@@ -129,6 +143,7 @@ function App() {
                 toggleImportance={() => toggleImportanceOf(note.id)}
                 key={note.id}
                 note={note}
+                handleDeleteNote={() => deleteNote(note.id)}
               />
             ))}
             {user !== null && noteForm()}

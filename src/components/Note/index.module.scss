@@ -4,4 +4,14 @@
   .noteImportanceBtn {
     border-radius: 8px;
   }
+  .deleteIcon {
+    visibility: hidden;
+    color: rgba(0, 102, 255, 0.301);
+    font-size: 1.5em;
+  }
+  &:hover {
+    .deleteIcon {
+      visibility: visible;
+    }
+  }
 }
