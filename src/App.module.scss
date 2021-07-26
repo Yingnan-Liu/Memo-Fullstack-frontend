@@ -1,23 +1,26 @@
 .appWrapper {
   display: flex;
   flex-direction: column;
-  background: #ececec;
+  background: linear-gradient(35deg, #ccffff, #ffcccc);
   min-height: 100vh;
   .header {
-    flex: 1;
     display: flex;
-    line-height: 5em;
+    height: 80px;
     justify-content: center;
     align-items: center;
-    background-color: white;
+    // background-color: white;
     .title {
-      text-decoration: dashed;
+      font-family: "Open Sans", sans-serif;
+      margin-top: 50px;
+      font-size: 30px;
+      font-weight: bold;
     }
   }
   .body {
     display: flex;
     flex: auto;
-    margin-top: 4rem;
+    margin-top: 20px;
+    margin-bottom: 20px;
     .sider {
       flex: 0 0 24em;
       margin-right: 4em;
@@ -28,10 +31,14 @@
       display: flex;
       justify-content: center;
       align-items: center;
+
       .card {
         width: 50vw;
         border-radius: 1.5em;
       }
     }
+  }
+  Button {
+    border-radius: 8px;
   }
 }

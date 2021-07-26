@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { Row, Button, Col, Input } from "antd";
-import styles from "./index.module.css";
+import styles from "./index.module.scss";
 
 const NoteForm = ({ createNote }) => {
   const [newNote, setNewNote] = useState("");

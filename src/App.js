@@ -5,7 +5,7 @@ import LoginForm from "./components/LoginForm";
 import NoteForm from "./components/NoteForm";
 import Togglable from "./components/Togglable";
 import Notification from "./components/Notification";
-import DeleteArea from "./components/DeleteArea";
+// import DeleteArea from "./components/DeleteArea";
 import noteService from "./services/notes";
 import loginService from "./services/login";
 import styles from "./App.module.scss";
@@ -177,14 +177,14 @@ const App = () => {
               {user !== null && noteForm()}
             </Card>
           </main>
-          <Droppable droppableId={"droppableTrash"}>
+          {/* <Droppable droppableId={"droppableTrash"}>
             {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 <DeleteArea />
                 {provided.placeholder}
               </div>
             )}
-          </Droppable>
+          </Droppable> */}
         </DragDropContext>
       </div>
     </div>
