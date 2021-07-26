@@ -1,6 +1,5 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
-import loginService from "../../services/login";
 
 const LoginForm = ({ handleSubmit }) => {
   return (

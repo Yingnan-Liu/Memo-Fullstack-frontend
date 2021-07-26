@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button, Card, Layout } from "antd";
+import { Button, Card } from "antd";
 import Note from "./components/Note";
 import LoginForm from "./components/LoginForm";
 import NoteForm from "./components/NoteForm";
 import Togglable from "./components/Togglable";
 import Notification from "./components/Notification";
+import DeleteArea from "./components/DeleteArea";
 import noteService from "./services/notes";
 import loginService from "./services/login";
 import styles from "./App.module.scss";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
-function App() {
+const App = () => {
   const [notes, setNotes] = useState([]);
   // 过滤重要的
   const [showAll, setShowAll] = useState(true);
@@ -22,9 +24,10 @@ function App() {
 
   useEffect(() => {
     noteService.getAll().then((initialNotes) => {
-      console.log("promise fullfilled");
-      console.log(initialNotes);
+      // console.log("promise fullfilled");
       setNotes(initialNotes);
+
+      // console.log(notes);
     });
   }, []);
   // 检查是否登陆过
@@ -111,7 +114,19 @@ function App() {
       <NoteForm createNote={createNote} />
     </Togglable>
   );
-
+  const onDragEnd = (result) => {
+    const { destination, source, draggbleId } = result;
+    console.log(result);
+    if (!destination) {
+      return;
+    }
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+  };
   return (
     <div className={styles.appWrapper}>
       {errorMessage && <Notification message={errorMessage} />}
@@ -128,30 +143,52 @@ function App() {
           </aside>
         )}
 
-        <main className={styles.content}>
-          <Card
-            className={styles.card}
-            title="Notes"
-            extra={
-              <Button onClick={() => setShowAll(!showAll)}>
-                <span>show {showAll ? "important" : "all"}</span>
-              </Button>
-            }
-          >
-            {notesToShow.map((note, i) => (
-              <Note
-                toggleImportance={() => toggleImportanceOf(note.id)}
-                key={note.id}
-                note={note}
-                handleDeleteNote={() => deleteNote(note.id)}
-              />
-            ))}
-            {user !== null && noteForm()}
-          </Card>
-        </main>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <main className={styles.content}>
+            <Card
+              className={styles.card}
+              title="Notes"
+              extra={
+                <Button onClick={() => setShowAll(!showAll)}>
+                  <span>show {showAll ? "important" : "all"}</span>
+                </Button>
+              }
+            >
+              <Droppable droppableId={"droppableCard"}>
+                {(provided) => (
+                  <div
+                    className={styles.notesContainer}
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                  >
+                    {notesToShow.map((note, index) => (
+                      <Note
+                        toggleImportance={() => toggleImportanceOf(note.id)}
+                        key={note.id}
+                        note={note}
+                        index={index}
+                        handleDeleteNote={() => deleteNote(note.id)}
+                      />
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+              {user !== null && noteForm()}
+            </Card>
+          </main>
+          <Droppable droppableId={"droppableTrash"}>
+            {(provided) => (
+              <div ref={provided.innerRef} {...provided.droppableProps}>
+                <DeleteArea />
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
       </div>
     </div>
   );
-}
+};
 
 export default App;
