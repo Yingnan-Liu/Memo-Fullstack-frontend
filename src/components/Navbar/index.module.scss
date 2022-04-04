@@ -1,0 +1,19 @@
+.imgWrapper{
+    width:100vw;
+    height:40vw;
+    overflow: hidden;
+    position: relative;
+    .headerImg{
+        width:100vw;
+        
+    }
+    .buttonArea{
+        position: absolute;
+        right:20px;
+        top:10px;
+        .button{
+            margin:5px 5px;
+        }
+    }
+}
+    
